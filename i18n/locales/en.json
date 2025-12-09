@@ -1,0 +1,156 @@
+{
+  "app": {
+    "name": "WarehouseOps",
+    "tagline": "Warehouse CRM"
+  },
+  "nav": {
+    "cms": "CMS",
+    "warehouse": "Warehouse",
+    "products": "Products",
+    "categories": "Categories",
+    "labels": "Labels",
+    "scanner": "Scanner",
+    "inventory": "Inventory",
+    "inventoryCount": "Inventory Count",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "scan": "Scan"
+  },
+  "user": {
+    "manageAccount": "Manage your account",
+    "appPreferences": "App preferences"
+  },
+  "common": {
+    "search": "Search",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "refresh": "Refresh",
+    "loading": "Loading",
+    "noData": "No data available",
+    "actions": "Actions",
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "management": "Management",
+    "navigation": "NAVIGATION"
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "CMS · Catalog",
+    "new": "New product",
+    "edit": "Edit product",
+    "create": "Create product",
+    "count": "{count} products",
+    "name": "Product",
+    "shortDescription": "Summary",
+    "slug": "Slug",
+    "price": "Price",
+    "currency": "Currency",
+    "inStock": "Available",
+    "outOfStock": "Out of stock",
+    "featured": "Featured",
+    "normal": "Normal",
+    "categories": "Categories",
+    "labels": "Labels",
+    "image": "Image",
+    "namePlaceholder": "Product name",
+    "slugPlaceholder": "auto-generated",
+    "currencyPlaceholder": "MXN",
+    "shortDescPlaceholder": "Short description",
+    "descPlaceholder": "Detail",
+    "nameRequired": "Name is required",
+    "deleteConfirm": "Delete \"{name}\"?",
+    "saveError": "Error saving product",
+    "deleteError": "Could not delete product",
+    "noResults": "No products with current filters"
+  },
+  "categories": {
+    "title": "Categories",
+    "subtitle": "CMS · Taxonomy",
+    "new": "New category",
+    "edit": "Edit category",
+    "create": "Create category",
+    "searchPlaceholder": "Search category",
+    "namePlaceholder": "E.g. Monitoring",
+    "descPlaceholder": "Brief note",
+    "noDescription": "No description",
+    "noData": "No categories yet",
+    "nameRequired": "Name is required",
+    "deleteConfirm": "Delete \"{name}\"?",
+    "saveError": "Error saving category",
+    "deleteError": "Could not delete category"
+  },
+  "labels": {
+    "title": "Labels",
+    "subtitle": "CMS · Taxonomy",
+    "new": "New label",
+    "edit": "Edit label",
+    "create": "Create label",
+    "searchPlaceholder": "Search label",
+    "namePlaceholder": "E.g. Premium",
+    "descPlaceholder": "Brief note",
+    "noDescription": "No description",
+    "noData": "No labels yet",
+    "nameRequired": "Name is required",
+    "deleteConfirm": "Delete \"{name}\"?",
+    "saveError": "Error saving label",
+    "deleteError": "Could not delete label"
+  },
+  "home": {
+    "title": "Internal panel for catalog and warehouse",
+    "description": "Manage products, categories and labels with sample data based on SQL dump. Coming soon: code scanner and inventory count.",
+    "goToProducts": "Go to products",
+    "nextSteps": "Next steps",
+    "integrateScanner": "Integrate scanning module with history",
+    "inventoryCrud": "CRUD for inventory and cycle counts",
+    "authentication": "Authentication with {'@'}sidebase/nuxt-auth"
+  },
+  "warehouse": {
+    "title": "Inventory count",
+    "subtitle": "Warehouse",
+    "description": "Coming soon: flows to record stock and cycle counts connected to the scanner."
+  },
+  "$vuetify": {
+    "open": "Open",
+    "close": "Close",
+    "input": {
+      "clear": "Clear {0}",
+      "prependAction": "{0} prepended action",
+      "appendAction": "{0} appended action"
+    },
+    "dataFooter": {
+      "itemsPerPageText": "Items per page:",
+      "itemsPerPageAll": "All",
+      "pageText": "{0}-{1} of {2}",
+      "firstPage": "First page",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "lastPage": "Last page"
+    },
+    "pagination": {
+      "ariaLabel": {
+        "root": "Pagination Navigation",
+        "previous": "Previous page",
+        "next": "Next page",
+        "currentPage": "Current page, Page {0}",
+        "page": "Go to page {0}"
+      }
+    },
+    "dataTable": {
+      "sortBy": "Sort by",
+      "ariaLabel": {
+        "sortDescending": "Sorted descending.",
+        "sortAscending": "Sorted ascending.",
+        "sortNone": "Not sorted.",
+        "activateNone": "Activate to remove sorting.",
+        "activateDescending": "Activate to sort descending.",
+        "activateAscending": "Activate to sort ascending."
+      }
+    }
+  }
+}

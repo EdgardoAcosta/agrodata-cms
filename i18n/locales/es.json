@@ -1,0 +1,156 @@
+{
+  "app": {
+    "name": "WarehouseOps",
+    "tagline": "Warehouse CRM"
+  },
+  "nav": {
+    "cms": "CMS",
+    "warehouse": "Almacén",
+    "products": "Productos",
+    "categories": "Categorías",
+    "labels": "Etiquetas",
+    "scanner": "Escáner",
+    "inventory": "Inventario",
+    "inventoryCount": "Conteo de Inventario",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión",
+    "scan": "Escanear"
+  },
+  "user": {
+    "manageAccount": "Administrar tu cuenta",
+    "appPreferences": "Preferencias de la app"
+  },
+  "common": {
+    "search": "Buscar",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saveChanges": "Guardar cambios",
+    "refresh": "Actualizar",
+    "loading": "Cargando",
+    "noData": "No hay datos disponibles",
+    "actions": "Acciones",
+    "id": "ID",
+    "name": "Nombre",
+    "description": "Descripción",
+    "management": "Gestión",
+    "navigation": "NAVEGACIÓN"
+  },
+  "products": {
+    "title": "Productos",
+    "subtitle": "CMS · Catálogo",
+    "new": "Nuevo producto",
+    "edit": "Editar producto",
+    "create": "Crear producto",
+    "count": "{count} productos",
+    "name": "Producto",
+    "shortDescription": "Resumen",
+    "slug": "Slug",
+    "price": "Precio",
+    "currency": "Moneda",
+    "inStock": "Disponible",
+    "outOfStock": "Sin stock",
+    "featured": "Destacado",
+    "normal": "Normal",
+    "categories": "Categorías",
+    "labels": "Etiquetas",
+    "image": "Imagen",
+    "namePlaceholder": "Nombre del producto",
+    "slugPlaceholder": "auto-generado",
+    "currencyPlaceholder": "MXN",
+    "shortDescPlaceholder": "Descripción corta",
+    "descPlaceholder": "Detalle",
+    "nameRequired": "El nombre es obligatorio",
+    "deleteConfirm": "¿Eliminar \"{name}\"?",
+    "saveError": "Error al guardar producto",
+    "deleteError": "No se pudo eliminar el producto",
+    "noResults": "No hay productos con los filtros actuales"
+  },
+  "categories": {
+    "title": "Categorías",
+    "subtitle": "CMS · Taxonomía",
+    "new": "Nueva categoría",
+    "edit": "Editar categoría",
+    "create": "Crear categoría",
+    "searchPlaceholder": "Buscar categoría",
+    "namePlaceholder": "Ej. Monitoreo",
+    "descPlaceholder": "Breve nota",
+    "noDescription": "Sin descripción",
+    "noData": "No hay categorías todavía",
+    "nameRequired": "El nombre es obligatorio",
+    "deleteConfirm": "¿Eliminar \"{name}\"?",
+    "saveError": "Error al guardar categoría",
+    "deleteError": "No se pudo eliminar la categoría"
+  },
+  "labels": {
+    "title": "Etiquetas",
+    "subtitle": "CMS · Taxonomía",
+    "new": "Nueva etiqueta",
+    "edit": "Editar etiqueta",
+    "create": "Crear etiqueta",
+    "searchPlaceholder": "Buscar etiqueta",
+    "namePlaceholder": "Ej. Premium",
+    "descPlaceholder": "Breve nota",
+    "noDescription": "Sin descripción",
+    "noData": "No hay etiquetas todavía",
+    "nameRequired": "El nombre es obligatorio",
+    "deleteConfirm": "¿Eliminar \"{name}\"?",
+    "saveError": "Error al guardar etiqueta",
+    "deleteError": "No se pudo eliminar la etiqueta"
+  },
+  "home": {
+    "title": "Panel interno para catálogos y almacén",
+    "description": "Administra productos, categorías y etiquetas con datos de ejemplo basados en el dump SQL. Próximamente: escáner de código y conteo de inventario.",
+    "goToProducts": "Ir a productos",
+    "nextSteps": "Próximos pasos",
+    "integrateScanner": "Integrar módulo de escaneo con historial",
+    "inventoryCrud": "CRUD para inventario y conteos cíclicos",
+    "authentication": "Autenticación con {'@'}sidebase/nuxt-auth"
+  },
+  "warehouse": {
+    "title": "Conteo de inventario",
+    "subtitle": "Almacén",
+    "description": "Próximamente: flujos para registrar existencias y conteos cíclicos conectados al escáner."
+  },
+  "$vuetify": {
+    "open": "Abrir",
+    "close": "Cerrar",
+    "input": {
+      "clear": "Limpiar {0}",
+      "prependAction": "Acción antepuesta de {0}",
+      "appendAction": "Acción anexada de {0}"
+    },
+    "dataFooter": {
+      "itemsPerPageText": "Elementos por página:",
+      "itemsPerPageAll": "Todos",
+      "pageText": "{0}-{1} de {2}",
+      "firstPage": "Primera página",
+      "prevPage": "Página anterior",
+      "nextPage": "Página siguiente",
+      "lastPage": "Última página"
+    },
+    "pagination": {
+      "ariaLabel": {
+        "root": "Navegación de paginación",
+        "previous": "Página anterior",
+        "next": "Página siguiente",
+        "currentPage": "Página actual, Página {0}",
+        "page": "Ir a la página {0}"
+      }
+    },
+    "dataTable": {
+      "sortBy": "Ordenar por",
+      "ariaLabel": {
+        "sortDescending": "Ordenado descendentemente.",
+        "sortAscending": "Ordenado ascendentemente.",
+        "sortNone": "No ordenado.",
+        "activateNone": "Activar para quitar ordenamiento.",
+        "activateDescending": "Activar para ordenar descendentemente.",
+        "activateAscending": "Activar para ordenar ascendentemente."
+      }
+    }
+  }
+}
