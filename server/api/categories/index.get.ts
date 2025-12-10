@@ -1,6 +1,9 @@
 import { listCategories } from "../../utils/cmsRepo";
+import { requireUserSession } from "../../utils/auth";
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
+  await requireUserSession(event);
+
   const query = getQuery(event);
 
   // Extract pagination parameters
@@ -19,7 +22,7 @@ export default defineEventHandler((event) => {
     allCategories = allCategories.filter(
       (cat: any) =>
         cat.name.toLowerCase().includes(term) ||
-        cat.description?.toLowerCase().includes(term)
+        cat.description?.toLowerCase().includes(term),
     );
   }
 

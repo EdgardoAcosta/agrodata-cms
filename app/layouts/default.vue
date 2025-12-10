@@ -21,7 +21,7 @@
                 <template #activator="{ props }">
                   <v-btn v-bind="props" variant="text" class="nav-menu-btn" prepend-icon="mdi-view-dashboard"
                     append-icon="mdi-chevron-down">
-                    {{ t('nav.cms') }}
+                    {{ t("nav.cms") }}
                   </v-btn>
                 </template>
                 <v-list class="nav-menu-list" density="comfortable">
@@ -47,7 +47,7 @@
                 <template #activator="{ props }">
                   <v-btn v-bind="props" variant="text" class="nav-menu-btn" prepend-icon="mdi-warehouse"
                     append-icon="mdi-chevron-down">
-                    {{ t('nav.warehouse') }}
+                    {{ t("nav.warehouse") }}
                   </v-btn>
                 </template>
                 <v-list class="nav-menu-list" density="comfortable">
@@ -72,11 +72,16 @@
                 <template #activator="{ props }">
                   <v-btn v-bind="props" variant="flat" class="user-menu-btn" rounded="pill">
                     <v-avatar color="primary" size="32" class="mr-2">
-                      <span class="text-subtitle-2 font-weight-bold">{{ initials }}</span>
+                      <span class="text-subtitle-2 font-weight-bold">{{
+                        initials
+                        }}</span>
                     </v-avatar>
                     <div class="text-start mr-2">
-                      <div class="text-body-2 font-weight-medium">{{ displayName }}</div>
-                      <div class="text-caption text-medium-emphasis">{{ session?.user?.email || 'user@example.com' }}
+                      <div class="text-body-2 font-weight-medium">
+                        {{ displayName }}
+                      </div>
+                      <div class="text-caption text-medium-emphasis">
+                        {{ session?.user?.email || "user@example.com" }}
                       </div>
                     </div>
                     <v-icon icon="mdi-chevron-down" size="small" />
@@ -87,7 +92,7 @@
                     :subtitle="t('user.manageAccount')" />
                   <v-list-item prepend-icon="mdi-cog" :title="t('nav.settings')" :subtitle="t('user.appPreferences')" />
                   <v-divider class="my-1" />
-                  <v-list-item prepend-icon="mdi-logout" :title="t('nav.logout')" @click="handleSignOut">
+                  <v-list-item prepend-icon="mdi-out" :title="t('nav.logout')" @click="handleSignOut">
                     <template #prepend>
                       <v-icon icon="mdi-logout" color="error" />
                     </template>
@@ -110,8 +115,12 @@
               <span class="text-h6 font-weight-bold">{{ initials }}</span>
             </v-avatar>
             <div>
-              <div class="text-subtitle-1 font-weight-medium">{{ displayName }}</div>
-              <div class="text-caption text-medium-emphasis">{{ session?.user?.email || 'user@example.com' }}</div>
+              <div class="text-subtitle-1 font-weight-medium">
+                {{ displayName }}
+              </div>
+              <div class="text-caption text-medium-emphasis">
+                {{ session?.user?.email || "user@example.com" }}
+              </div>
             </div>
           </div>
         </div>
@@ -149,50 +158,69 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
-
-// Auth not wired yet; stub session + signOut to keep layout rendering.
-const session = ref<{ user?: { name?: string; email?: string } } | null>(null)
-const signOut = async (_opts?: { callbackUrl?: string }) => {}
-const route = useRoute()
-const router = useRouter()
-const mobileMenuOpen = ref(false)
-const go = (path: string) => router.push(path)
+const { t } = useI18n();
+const { data: session, signOut } = useAuth();
+const route = useRoute();
+const router = useRouter();
+const mobileMenuOpen = ref(false);
+const go = (path: string) => router.push(path);
 const dockItems = computed(() => [
-  { label: t('nav.scan'), iconClass: 'mdi-qrcode-scan', onClick: () => go('/') },
-  { label: t('nav.products'), iconClass: 'mdi-package-variant', onClick: () => go('/products') },
-  { label: t('nav.inventory'), iconClass: 'mdi-clipboard-list', onClick: () => go('/warehouse/inventory-count') },
-  { label: t('nav.profile'), iconClass: 'mdi-account', onClick: () => go('/products') }
-])
+  {
+    label: t("nav.scan"),
+    iconClass: "mdi-qrcode-scan",
+    onClick: () => go("/"),
+  },
+  {
+    label: t("nav.products"),
+    iconClass: "mdi-package-variant",
+    onClick: () => go("/products"),
+  },
+  {
+    label: t("nav.inventory"),
+    iconClass: "mdi-clipboard-list",
+    onClick: () => go("/warehouse/inventory-count"),
+  },
+  {
+    label: t("nav.profile"),
+    iconClass: "mdi-account",
+    onClick: () => go("/products"),
+  },
+]);
 
-const displayName = computed(() => session.value?.user?.name || 'User')
+const displayName = computed(() => session.value?.user?.name || "User");
 const initials = computed(() => {
-  const name = session.value?.user?.name || 'U'
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('') || 'U'
-})
+  const name = session.value?.user?.name || "U";
+  return (
+    name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join("") || "U"
+  );
+});
 
 const handleSignOut = async () => {
-  await signOut({ callbackUrl: '/login' })
-}
+  try {
+    await signOut({ callbackUrl: "/login", redirect: true });
+  } catch (error) {
+    console.error("Sign out failed", error);
+  }
+};
 
 const closeMobileMenu = () => {
-  mobileMenuOpen.value = false
-}
+  mobileMenuOpen.value = false;
+};
 
 const handleSignOutAndClose = async () => {
-  closeMobileMenu()
-  await handleSignOut()
-}
+  closeMobileMenu();
+  await handleSignOut();
+};
 
 watch(
   () => route.fullPath,
-  () => closeMobileMenu()
-)
+  () => closeMobileMenu(),
+);
 </script>
 
 <style scoped>

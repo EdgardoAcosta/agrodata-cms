@@ -1,0 +1,20 @@
+[
+  {
+    "id": "admin-001",
+    "login": "admin",
+    "email": "admin@agrodata.com",
+    "password": "admin",
+    "name": "Admin User",
+    "role": "admin",
+    "organization": "WarehouseOps"
+  },
+  {
+    "id": "ops-001",
+    "login": "ops",
+    "email": "ops@agrodata.com",
+    "password": "ops123",
+    "name": "Ops User",
+    "role": "staff",
+    "organization": "WarehouseOps"
+  }
+]

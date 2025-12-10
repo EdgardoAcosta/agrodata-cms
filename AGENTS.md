@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Agrodata CMS is a content managment system designed to serve the Agrodata de Mexico web page an their internal needs (like warehouse  ).
+Agrodata CMS is a content managment system designed to serve the Agrodata de Mexico web page an their internal needs (like warehouse ).
 This is a mobile-first application designed for ease of use in warehouse and retail environments.
 
 ## Tech Stack
@@ -19,23 +19,23 @@ This is a mobile-first application designed for ease of use in warehouse and ret
 
 ## Project Structure
 
-``` markdown
+```markdown
 agrodata-cms/
 ├── app/
-│   ├── app.vue                 # Root component
-│   ├── assets/
-│   │   └── scss/
-│   │       └── app.scss        # Global styles
-│   ├── components/
-│   │   ├── LoadingOverlay.vue  # Full-screen loading overlay with blur
-│   └── pages/
-│       ├── cms                 # CMS related content
-│       │ ├──── index.vue 
-│       ├── werehouse           # Warehouse related content
+│ ├── app.vue # Root component
+│ ├── assets/
+│ │ └── scss/
+│ │ └── app.scss # Global styles
+│ ├── components/
+│ │ ├── LoadingOverlay.vue # Full-screen loading overlay with blur
+│ └── pages/
+│ ├── cms # CMS related content
+│ │ ├──── index.vue
+│ ├── werehouse # Warehouse related content
 │
-├── nuxt.config.ts              # Nuxt configuration
-├── package.json                # Dependencies
-└── tsconfig.json               # TypeScript config
+├── nuxt.config.ts # Nuxt configuration
+├── package.json # Dependencies
+└── tsconfig.json # TypeScript config
 ```
 
 ## Key Features

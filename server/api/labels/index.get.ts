@@ -1,6 +1,9 @@
 import { listLabels } from "../../utils/cmsRepo";
+import { requireUserSession } from "../../utils/auth";
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
+  await requireUserSession(event);
+
   const query = getQuery(event);
 
   // Extract pagination parameters
@@ -19,7 +22,7 @@ export default defineEventHandler((event) => {
     allLabels = allLabels.filter(
       (label: any) =>
         label.name.toLowerCase().includes(term) ||
-        label.description?.toLowerCase().includes(term)
+        label.description?.toLowerCase().includes(term),
     );
   }
 

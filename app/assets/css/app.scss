@@ -1,9 +1,14 @@
 /* Minimal base styles */
-@use '../scss/components/navbar';
+@use "../scss/components/navbar";
 
 :root {
   color-scheme: light;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   background-color: #f8fafc;
   color: #0f172a;
 }

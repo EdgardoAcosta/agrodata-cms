@@ -3,8 +3,15 @@
     <Transition name="fade">
       <div v-if="isVisible" class="loading-overlay">
         <div class="d-flex flex-column align-center ga-4">
-          <v-progress-circular indeterminate color="white" :size="60" :width="4" />
-          <p v-if="message" class="text-white text-body-1 ma-0 text-center">{{ message }}</p>
+          <v-progress-circular
+            indeterminate
+            color="white"
+            :size="60"
+            :width="4"
+          />
+          <p v-if="message" class="text-white text-body-1 ma-0 text-center">
+            {{ message }}
+          </p>
         </div>
       </div>
     </Transition>
@@ -17,16 +24,19 @@ const props = defineProps<{
   message?: string;
 }>();
 
-watch(() => props.isVisible, (newValue) => {
-  if (newValue) {
-    document.body.style.overflow = 'hidden';
-  } else {
-    document.body.style.overflow = '';
-  }
-});
+watch(
+  () => props.isVisible,
+  (newValue) => {
+    if (newValue) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  },
+);
 
 onUnmounted(() => {
-  document.body.style.overflow = '';
+  document.body.style.overflow = "";
 });
 </script>
 

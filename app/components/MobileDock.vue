@@ -1,6 +1,12 @@
 <template>
   <nav class="mobile-dock d-md-none">
-    <v-btn v-for="item in items" :key="item.label" variant="elevated" class="dock-item" @click="item.onClick()">
+    <v-btn
+      v-for="item in items"
+      :key="item.label"
+      variant="elevated"
+      class="dock-item"
+      @click="item.onClick()"
+    >
       <div class="d-flex flex-column align-center ga-1">
         <v-icon :icon="item.iconClass" size="small" />
         <span class="text-caption">{{ item.label }}</span>
@@ -11,12 +17,12 @@
 
 <script setup lang="ts">
 type DockItem = {
-  label: string
-  iconClass: string  // mdi icon name like 'mdi-home'
-  onClick: () => void
-}
+  label: string;
+  iconClass: string; // mdi icon name like 'mdi-home'
+  onClick: () => void;
+};
 
-defineProps<{ items: DockItem[] }>()
+defineProps<{ items: DockItem[] }>();
 </script>
 
 <style scoped>

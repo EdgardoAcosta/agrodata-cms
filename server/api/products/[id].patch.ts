@@ -1,23 +1,26 @@
-import { updateProduct } from '../../utils/cmsRepo'
+import { updateProduct } from "../../utils/cmsRepo";
+import { requireUserSession } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  const id = Number(event.context.params?.id)
+  await requireUserSession(event);
+
+  const id = Number(event.context.params?.id);
   const body = await readBody<
     Partial<{
-      name: string
-      slug: string
-      description: string
-      shortDescription: string
-      price: number
-      currency: string
-      inStock: boolean
-      featured: boolean
-      image: string
-      categoryIds: number[]
-      labelIds: number[]
+      name: string;
+      slug: string;
+      description: string;
+      shortDescription: string;
+      price: number;
+      currency: string;
+      inStock: boolean;
+      featured: boolean;
+      image: string;
+      categoryIds: number[];
+      labelIds: number[];
     }>
-  >(event)
+  >(event);
 
-  const updated = updateProduct(id, body)
-  return { data: updated }
-})
+  const updated = updateProduct(id, body);
+  return { data: updated };
+});
