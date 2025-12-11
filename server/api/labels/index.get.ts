@@ -21,8 +21,9 @@ export default defineEventHandler(async (event) => {
     const term = search.toLowerCase();
     allLabels = allLabels.filter(
       (label: any) =>
+        label.id.toString().includes(term) ||
         label.name.toLowerCase().includes(term) ||
-        label.description?.toLowerCase().includes(term),
+        label.description?.toLowerCase().includes(term)
     );
   }
 

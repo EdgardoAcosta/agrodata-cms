@@ -151,6 +151,10 @@
         "activateDescending": "Activate to sort descending.",
         "activateAscending": "Activate to sort ascending."
       }
+    },
+    "dataIterator": {
+      "noResultsText": "No matching records found",
+      "loadingText": "Loading items..."
     }
   }
 }

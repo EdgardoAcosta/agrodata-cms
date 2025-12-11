@@ -151,6 +151,10 @@
         "activateDescending": "Activar para ordenar descendentemente.",
         "activateAscending": "Activar para ordenar ascendentemente."
       }
+    },
+    "dataIterator": {
+      "noResultsText": "No se encontraron registros",
+      "loadingText": "Cargando elementos..."
     }
   }
 }

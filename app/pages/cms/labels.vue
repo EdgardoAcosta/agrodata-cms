@@ -1,84 +1,57 @@
 <template>
   <v-container fluid class="pa-4">
     <v-row class="mb-4">
-      <v-col cols="12" md="auto" class="flex-grow-1">
+      <v-col cols="12">
         <div class="text-caption text-medium-emphasis mb-1">
           CMS · Taxonomía
         </div>
         <h1 class="text-h5">Etiquetas</h1>
       </v-col>
-      <v-col cols="12" md="auto" class="d-flex flex-wrap ga-2">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          hide-details
-          variant="outlined"
-          placeholder="Buscar etiqueta"
-          style="width: 240px"
-        />
-        <v-btn color="primary" density="comfortable" @click="openCreate"
-          >Nueva etiqueta</v-btn
-        >
-      </v-col>
     </v-row>
 
     <v-card>
-      <v-card-title class="d-flex justify-space-between align-center">
-        <span class="text-caption text-medium-emphasis"
-          >{{ totalItems }} etiquetas</span
-        >
-        <v-btn
-          variant="text"
-          density="compact"
-          :loading="loading"
-          @click="loadItems"
-          >Actualizar</v-btn
-        >
-      </v-card-title>
-      <v-data-table-server
-        v-model:items-per-page="itemsPerPage"
-        v-model:page="page"
-        v-model:sort-by="sortBy"
-        :headers="headers"
-        :items="labels"
-        :items-length="totalItems"
-        :loading="loading"
-        class="elevation-0"
-        @update:options="loadItems"
-      >
-        <template #item.name="{ item }">
-          <div class="font-weight-medium">{{ item.name }}</div>
-          <div class="text-caption text-medium-emphasis">ID: {{ item.id }}</div>
-        </template>
-        <template #item.description="{ item }">
-          <span class="text-medium-emphasis">{{
-            item.description || "Sin descripción"
-          }}</span>
-        </template>
-        <template #item.actions="{ item }">
-          <div class="d-flex ga-2 justify-end">
-            <v-btn
-              size="small"
-              variant="text"
-              color="primary"
-              @click="openEdit(item)"
-              ><v-icon icon="mdi-pencil"
-            /></v-btn>
-            <v-btn
-              size="small"
-              variant="text"
-              color="error"
-              @click="confirmDelete(item)"
-              ><v-icon icon="mdi-delete"
-            /></v-btn>
-          </div>
-        </template>
-        <template #no-data>
-          <div class="py-4 text-center text-medium-emphasis">
-            No hay etiquetas todavía
-          </div>
-        </template>
-      </v-data-table-server>
+      <ClientOnly>
+        <v-data-table-server v-model:items-per-page="itemsPerPage" v-model:page="page" v-model:sort-by="sortBy"
+          :search="search" :headers="headers" :items="labels" :items-length="totalItems" :loading="loading"
+          class="elevation-0" @update:options="loadItems">
+
+          <!-- Integrated filter toolbar -->
+          <template #top>
+            <v-toolbar flat density="compact" class="px-2">
+              <v-toolbar-title class="text-caption text-medium-emphasis">
+                {{ totalItems }} etiquetas
+              </v-toolbar-title>
+              <v-spacer />
+              <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Buscar" single-line hide-details
+                density="compact" variant="outlined" clearable style="max-width: 300px" class="mr-2" />
+              <v-btn icon="mdi-refresh" variant="text" :loading="loading" @click="loadItems" />
+              <v-btn icon="mdi-plus" color="primary" variant="elevated" @click="openCreate" />
+            </v-toolbar>
+          </template>
+
+          <template #item.name="{ item }">
+            <div class="font-weight-medium">{{ item.name }}</div>
+          </template>
+          <template #item.description="{ item }">
+            <span class="text-medium-emphasis">{{
+              item.description || "Sin descripción"
+              }}</span>
+          </template>
+          <template #item.actions="{ item }">
+            <div class="d-flex ga-2 justify-end">
+              <v-btn size="small" variant="text" color="primary" @click="openEdit(item)"><v-icon
+                  icon="mdi-pencil" /></v-btn>
+              <v-btn size="small" variant="text" color="error" @click="confirmDelete(item)"><v-icon
+                  icon="mdi-delete" /></v-btn>
+            </div>
+          </template>
+          <template #no-data>
+            <div class="py-4 text-center text-medium-emphasis">
+              No hay etiquetas todavía
+            </div>
+          </template>
+        </v-data-table-server>
+      </ClientOnly>
     </v-card>
 
     <v-dialog v-model="formOpen" max-width="520" persistent>
@@ -98,21 +71,11 @@
           <v-form @submit.prevent="handleSubmit">
             <v-row dense>
               <v-col cols="12">
-                <v-text-field
-                  v-model="form.name"
-                  label="Nombre"
-                  required
-                  placeholder="Ej. Premium"
-                />
+                <v-text-field v-model="form.name" label="Nombre" required placeholder="Ej. Premium" />
               </v-col>
               <v-col cols="12">
-                <v-textarea
-                  v-model="form.description"
-                  label="Descripción"
-                  rows="3"
-                  auto-grow
-                  placeholder="Breve nota"
-                />
+                <v-textarea v-model="form.description" label="Descripción" rows="3" auto-grow
+                  placeholder="Breve nota" />
               </v-col>
             </v-row>
           </v-form>
@@ -135,7 +98,14 @@ type Label = {
   description: string;
 };
 
-const search = ref("");
+const route = useRoute();
+// Support multiple query param names for flexibility
+const initialSearch = (route.query.labelId as string) || 
+                     (route.query.name as string) || 
+                     (route.query.search as string) || 
+                     "";
+const search = ref(initialSearch);
+const requestFetch = useRequestFetch();
 const formOpen = ref(false);
 const saving = ref(false);
 const editingId = ref<number | null>(null);
@@ -172,7 +142,7 @@ const loadItems = async () => {
           : "asc"
         : "asc";
 
-    const response = await $fetch<{ data: Label[]; total: number }>(
+    const response = await requestFetch<{ data: Label[]; total: number }>(
       "/api/labels",
       {
         params: {
@@ -229,12 +199,12 @@ const handleSubmit = async () => {
   saving.value = true;
   try {
     if (editingId.value) {
-      await $fetch(`/api/labels/${editingId.value}`, {
+      await requestFetch(`/api/labels/${editingId.value}`, {
         method: "PATCH",
         body: { ...form },
       });
     } else {
-      await $fetch("/api/labels", { method: "POST", body: { ...form } });
+      await requestFetch("/api/labels", { method: "POST", body: { ...form } });
     }
     await loadItems();
     closeForm();
@@ -250,7 +220,7 @@ const confirmDelete = async (label: Label) => {
   const confirmed = confirm(`¿Eliminar "${label.name}"?`);
   if (!confirmed) return;
   try {
-    await $fetch(`/api/labels/${label.id}`, { method: "DELETE" });
+    await requestFetch(`/api/labels/${label.id}`, { method: "DELETE" });
     await loadItems();
   } catch (error: any) {
     console.error(error);

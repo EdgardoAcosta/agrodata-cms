@@ -29,25 +29,19 @@
                 <template #prepend>
                   <v-icon icon="mdi-qrcode-scan" color="primary" />
                 </template>
-                <v-list-item-title class="text-caption"
-                  >Integrar módulo de escaneo con historial</v-list-item-title
-                >
+                <v-list-item-title class="text-caption">Integrar módulo de escaneo con historial</v-list-item-title>
               </v-list-item>
               <v-list-item class="px-0">
                 <template #prepend>
                   <v-icon icon="mdi-package-variant" color="primary" />
                 </template>
-                <v-list-item-title class="text-caption"
-                  >CRUD de inventario y conteos cíclicos</v-list-item-title
-                >
+                <v-list-item-title class="text-caption">CRUD de inventario y conteos cíclicos</v-list-item-title>
               </v-list-item>
               <v-list-item class="px-0">
                 <template #prepend>
                   <v-icon icon="mdi-shield-check" color="primary" />
                 </template>
-                <v-list-item-title class="text-caption"
-                  >Autenticación con @sidebase/nuxt-auth</v-list-item-title
-                >
+                <v-list-item-title class="text-caption">Autenticación con @sidebase/nuxt-auth</v-list-item-title>
               </v-list-item>
             </v-list>
           </div>

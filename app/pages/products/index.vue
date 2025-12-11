@@ -1,106 +1,100 @@
 <template>
   <v-container fluid class="pa-4">
     <v-row class="mb-4">
-      <v-col cols="12" md="auto" class="flex-grow-1">
+      <v-col cols="12">
         <div class="text-caption text-medium-emphasis mb-1">CMS · Catálogo</div>
         <h1 class="text-h5">Productos</h1>
-      </v-col>
-      <v-col cols="12" md="auto" class="d-flex flex-wrap ga-2 align-center">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          hide-details
-          variant="outlined"
-          placeholder="Buscar"
-          style="width: 220px"
-        />
-        <v-select
-          v-model="categoryFilter"
-          :items="categoryOptions"
-          item-title="label"
-          item-value="value"
-          density="compact"
-          hide-details
-          variant="outlined"
-          placeholder="Categoría"
-          clearable
-          style="max-width: 180px"
-        />
-        <v-select
-          v-model="labelFilter"
-          :items="labelOptions"
-          item-title="label"
-          item-value="value"
-          density="compact"
-          hide-details
-          variant="outlined"
-          placeholder="Etiqueta"
-          clearable
-          style="width: 180px"
-        />
-        <v-btn color="primary" density="comfortable" @click="openCreate"
-          >Nuevo producto</v-btn
-        >
       </v-col>
     </v-row>
 
     <v-card>
-      <v-card-title class="d-flex justify-space-between align-center">
-        <span class="text-caption text-medium-emphasis"
-          >{{ totalItems }} productos</span
-        >
-        <v-btn
-          variant="text"
-          density="compact"
-          :loading="loading"
-          @click="loadItems"
-          >Actualizar</v-btn
-        >
-      </v-card-title>
-      <v-data-table-server
-        v-model:items-per-page="itemsPerPage"
-        v-model:page="page"
-        v-model:sort-by="sortBy"
-        :headers="headers"
-        :items="products"
-        :items-length="totalItems"
-        :loading="loading"
-        class="elevation-0"
-        @update:options="loadItems"
-      >
+      <v-data-table-server v-model:items-per-page="itemsPerPage" v-model:page="page" v-model:sort-by="sortBy"
+        :search="search" :headers="headers" :items="products" :items-length="totalItems" :loading="loading"
+        class="elevation-0" @update:options="loadItems">
+
+        <!-- Integrated filter toolbar -->
+        <template #top>
+          <!-- Single responsive toolbar -->
+          <div class="pa-3">
+            <v-row dense align="center">
+              <!-- Title and count -->
+              <v-col cols="auto" class="text-caption text-medium-emphasis">
+                {{ totalItems }} productos
+              </v-col>
+
+              <v-spacer />
+
+              <!-- Desktop filters (hidden on mobile) -->
+              <v-col cols="auto" class="d-none d-md-flex">
+                <div class="d-flex ga-2 align-center">
+                  <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Buscar" single-line
+                    hide-details density="compact" variant="outlined" clearable style="width: 200px" />
+                  <v-select v-model="categoryFilter" :items="categoryOptions" item-title="label" item-value="value"
+                    prepend-inner-icon="mdi-folder-outline" placeholder="Categoría" density="compact" hide-details
+                    variant="outlined" clearable style="width: 160px" />
+                  <v-select v-model="labelFilter" :items="labelOptions" item-title="label" item-value="value"
+                    prepend-inner-icon="mdi-tag-outline" placeholder="Etiqueta" density="compact" hide-details
+                    variant="outlined" clearable style="width: 160px" />
+                </div>
+              </v-col>
+
+              <!-- Action buttons -->
+              <v-col cols="auto">
+                <div class="d-flex ga-2">
+                  <!-- Filter button (mobile only) -->
+                  <v-btn icon="mdi-filter-variant" variant="text" size="small" class="d-md-none"
+                    @click="filterSheet = true">
+                    <v-icon>mdi-filter-variant</v-icon>
+                    <v-badge v-if="search || categoryFilter || labelFilter" color="primary"
+                      :content="activeFiltersCount" floating />
+                  </v-btn>
+                  <v-btn icon="mdi-refresh" variant="text" size="small" :loading="loading" @click="loadItems" />
+                  <v-btn icon="mdi-plus" color="primary" size="small" @click="openCreate" />
+                </div>
+              </v-col>
+            </v-row>
+
+            <!-- Active filter chips row -->
+            <v-row v-if="search || categoryFilter || labelFilter" dense class="mt-2">
+              <v-col cols="12">
+                <div class="d-flex flex-wrap ga-1">
+                  <v-chip v-if="search" closable size="small" @click:close="search = ''">
+                    {{ search }}
+                  </v-chip>
+                  <v-chip v-if="categoryFilter" closable size="small" color="primary" variant="tonal"
+                    @click:close="categoryFilter = null">
+                    {{ categoryOptions.find(c => c.value === categoryFilter)?.label }}
+                  </v-chip>
+                  <v-chip v-if="labelFilter" closable size="small" color="secondary" variant="tonal"
+                    @click:close="labelFilter = null">
+                    {{ labelOptions.find(l => l.value === labelFilter)?.label }}
+                  </v-chip>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+        </template>
+
         <template #item.name="{ item }">
           <div class="font-weight-medium">{{ item.name }}</div>
           <div class="text-caption text-medium-emphasis">
             {{ item.shortDescription }}
           </div>
-          <div
-            class="text-caption text-medium-emphasis"
-            style="font-size: 0.7rem"
-          >
+          <div class="text-caption text-medium-emphasis" style="font-size: 0.7rem">
             {{ item.slug }}
           </div>
         </template>
         <template #item.categories="{ item }">
           <div class="d-flex flex-wrap ga-1">
-            <v-chip
-              v-for="cat in item.categories"
-              :key="cat.id"
-              size="small"
-              variant="tonal"
-            >
+            <v-chip v-for="cat in item.categories" :key="cat.id" size="small" variant="tonal"
+              @click="navigateToCategory(cat.id)">
               {{ cat.name }}
             </v-chip>
           </div>
         </template>
         <template #item.labels="{ item }">
           <div class="d-flex flex-wrap ga-1">
-            <v-chip
-              v-for="label in item.labels"
-              :key="label.id"
-              size="small"
-              color="primary"
-              variant="elevated"
-            >
+            <v-chip v-for="label in item.labels" :key="label.id" size="small" color="primary" variant="elevated">
               {{ label.name }}
             </v-chip>
           </div>
@@ -120,19 +114,10 @@
         </template>
         <template #item.actions="{ item }">
           <div class="d-flex ga-2 justify-end">
-            <v-btn
-              size="small"
-              variant="tonal"
-              color="primary"
-              @click="openEdit(item)"
-              >Editar</v-btn
-            >
-            <v-btn
-              size="small"
-              variant="text"
-              color="error"
-              @click="confirmDelete(item)"
-              >Eliminar</v-btn
+            <v-btn size="small" variant="text" color="primary" @click="openEdit(item)"><v-icon
+                icon="mdi-pencil" /></v-btn>
+            <v-btn size="small" variant="text" color="error" @click="confirmDelete(item)"><v-icon
+                icon="mdi-delete" /></v-btn>
             >
           </div>
         </template>
@@ -143,6 +128,39 @@
         </template>
       </v-data-table-server>
     </v-card>
+
+    <!-- Mobile filter bottom sheet -->
+    <v-bottom-sheet v-model="filterSheet">
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Filtros</span>
+          <v-btn icon="mdi-close" variant="text" size="small" @click="filterSheet = false" />
+        </v-card-title>
+        <v-card-text>
+          <v-row dense>
+            <v-col cols="12">
+              <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Buscar producto" hide-details
+                density="comfortable" variant="outlined" clearable />
+            </v-col>
+            <v-col cols="12">
+              <v-select v-model="categoryFilter" :items="categoryOptions" item-title="label" item-value="value"
+                prepend-inner-icon="mdi-folder-outline" label="Categoría" hide-details density="comfortable"
+                variant="outlined" clearable />
+            </v-col>
+            <v-col cols="12">
+              <v-select v-model="labelFilter" :items="labelOptions" item-title="label" item-value="value"
+                prepend-inner-icon="mdi-tag-outline" label="Etiqueta" hide-details density="comfortable"
+                variant="outlined" clearable />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="text" @click="clearFilters">Limpiar filtros</v-btn>
+          <v-spacer />
+          <v-btn color="primary" @click="filterSheet = false">Aplicar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-bottom-sheet>
 
     <v-dialog v-model="formOpen" max-width="720" persistent>
       <v-card>
@@ -161,90 +179,37 @@
           <v-form @submit.prevent="handleSubmit">
             <v-row dense>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="form.name"
-                  label="Nombre"
-                  required
-                  placeholder="Nombre del producto"
-                />
+                <v-text-field v-model="form.name" label="Nombre" required placeholder="Nombre del producto" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="form.slug"
-                  label="Slug"
-                  placeholder="auto-generado"
-                />
+                <v-text-field v-model="form.slug" label="Slug" placeholder="auto-generado" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model.number="form.price"
-                  type="number"
-                  label="Precio"
-                  min="0"
-                  step="0.01"
-                />
+                <v-text-field v-model.number="form.price" type="number" label="Precio" min="0" step="0.01" />
               </v-col>
               <v-col cols="6" md="3">
-                <v-text-field
-                  v-model="form.currency"
-                  label="Moneda"
-                  placeholder="MXN"
-                />
+                <v-text-field v-model="form.currency" label="Moneda" placeholder="MXN" />
               </v-col>
               <v-col cols="6" md="3" class="d-flex align-center ga-3">
-                <v-switch
-                  v-model="form.inStock"
-                  label="Disponible"
-                  hide-details
-                  density="compact"
-                />
-                <v-switch
-                  v-model="form.featured"
-                  label="Destacado"
-                  hide-details
-                  density="compact"
-                />
+                <v-switch v-model="form.inStock" label="Disponible" hide-details density="compact" />
+                <v-switch v-model="form.featured" label="Destacado" hide-details density="compact" />
               </v-col>
             </v-row>
 
             <v-row dense>
               <v-col cols="12">
-                <v-text-field
-                  v-model="form.shortDescription"
-                  label="Resumen"
-                  placeholder="Descripción corta"
-                />
+                <v-text-field v-model="form.shortDescription" label="Resumen" placeholder="Descripción corta" />
               </v-col>
               <v-col cols="12">
-                <v-textarea
-                  v-model="form.description"
-                  label="Descripción"
-                  rows="4"
-                  auto-grow
-                  placeholder="Detalle"
-                />
+                <v-textarea v-model="form.description" label="Descripción" rows="4" auto-grow placeholder="Detalle" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select
-                  v-model="form.categoryIds"
-                  :items="categoryOptions"
-                  item-title="label"
-                  item-value="value"
-                  label="Categorías"
-                  multiple
-                  clearable
-                />
+                <v-select v-model="form.categoryIds" :items="categoryOptions" item-title="label" item-value="value"
+                  label="Categorías" multiple clearable />
               </v-col>
               <v-col cols="12" md="6">
-                <v-select
-                  v-model="form.labelIds"
-                  :items="labelOptions"
-                  item-title="label"
-                  item-value="value"
-                  label="Etiquetas"
-                  multiple
-                  clearable
-                />
+                <v-select v-model="form.labelIds" :items="labelOptions" item-title="label" item-value="value"
+                  label="Etiquetas" multiple clearable />
               </v-col>
             </v-row>
           </v-form>
@@ -301,8 +266,25 @@ const search = ref("");
 const categoryFilter = ref<number | null>(null);
 const labelFilter = ref<number | null>(null);
 const formOpen = ref(false);
+const filterSheet = ref(false);
 const editingId = ref<number | null>(null);
 const isEditing = computed(() => Boolean(editingId.value));
+
+// Count active filters
+const activeFiltersCount = computed(() => {
+  let count = 0;
+  if (search.value) count++;
+  if (categoryFilter.value) count++;
+  if (labelFilter.value) count++;
+  return count;
+});
+
+// Clear all filters
+const clearFilters = () => {
+  search.value = "";
+  categoryFilter.value = null;
+  labelFilter.value = null;
+};
 
 // Server-side pagination
 const page = ref(1);
@@ -494,5 +476,8 @@ const confirmDelete = async (product: Product) => {
     console.error(error);
     window.alert("No se pudo eliminar el producto");
   }
+};
+const navigateToCategory = (categoryId: number) => {
+  navigateTo(`/cms/categories?categoryId=${categoryId}`);
 };
 </script>
