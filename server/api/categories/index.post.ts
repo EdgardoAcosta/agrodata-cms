@@ -1,14 +1,9 @@
-import { createCategory } from "../../utils/cmsRepo";
-import { requireUserSession } from "../../utils/auth";
+import { proxyToExternalAPI } from "../../utils/apiProxy";
 
 export default defineEventHandler(async (event) => {
-  await requireUserSession(event);
-
-  const body =
-    await readBody<Partial<{ name: string; description: string }>>(event);
-  const category = createCategory(body);
-
-  return {
-    data: category,
-  };
+  const body = await readBody(event);
+  return await proxyToExternalAPI(event, "/cms/categories", {
+    method: "POST",
+    body,
+  });
 });

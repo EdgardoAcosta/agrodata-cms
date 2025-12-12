@@ -1,9 +1,8 @@
-import { getProduct } from "../../utils/cmsRepo";
-import { requireUserSession } from "../../utils/auth";
+import { proxyToExternalAPI } from "../../utils/apiProxy";
 
 export default defineEventHandler(async (event) => {
-  await requireUserSession(event);
-
-  const id = Number(event.context.params?.id);
-  return { data: getProduct(id) };
+  const id = event.context.params?.id;
+  return await proxyToExternalAPI(event, `/cms/products/${id}`, {
+    method: "GET",
+  });
 });

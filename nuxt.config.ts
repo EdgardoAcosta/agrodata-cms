@@ -34,6 +34,9 @@ export default defineNuxtConfig({
       isEnabled: true,
     },
   },
+  routeRules: {
+    "/": { redirect: "/warehouse" },
+  },
   runtimeConfig: {
     // Private runtime config (server-side only)
     // Environment variables with NUXT_ prefix are automatically loaded
@@ -44,5 +47,7 @@ export default defineNuxtConfig({
       mockUserEmail: "",
       mockUserPassword: "",
     },
+    // External API configuration (server-side ONLY - not exposed to client)
+    apiBaseUrl: process.env.NUXT_API_BASE_URL || "http://localhost:8883",
   },
 });

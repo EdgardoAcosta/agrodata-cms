@@ -11,7 +11,7 @@
     "labels": "Etiquetas",
     "scanner": "Escáner",
     "inventory": "Inventario",
-    "inventoryCount": "Conteo de Inventario",
+    "cycleCount": "Conteo Cíclico",
     "profile": "Perfil",
     "settings": "Configuración",
     "logout": "Cerrar sesión",
@@ -118,6 +118,7 @@
   "$vuetify": {
     "open": "Abrir",
     "close": "Cerrar",
+    "noDataText": "No hay datos disponibles",
     "input": {
       "clear": "Limpiar {0}",
       "prependAction": "Acción antepuesta de {0}",

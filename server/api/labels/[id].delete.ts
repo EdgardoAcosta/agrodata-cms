@@ -1,10 +1,8 @@
-import { deleteLabel } from "../../utils/cmsRepo";
-import { requireUserSession } from "../../utils/auth";
+import { proxyToExternalAPI } from "../../utils/apiProxy";
 
 export default defineEventHandler(async (event) => {
-  await requireUserSession(event);
-
-  const id = Number(event.context.params?.id);
-  deleteLabel(id);
-  return { data: { ok: true } };
+  const id = event.context.params?.id;
+  return await proxyToExternalAPI(event, `/cms/labels/${id}`, {
+    method: "DELETE",
+  });
 });

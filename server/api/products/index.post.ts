@@ -1,25 +1,9 @@
-import { createProduct } from "../../utils/cmsRepo";
-import { requireUserSession } from "../../utils/auth";
+import { proxyToExternalAPI } from "../../utils/apiProxy";
 
 export default defineEventHandler(async (event) => {
-  await requireUserSession(event);
-
-  const body = await readBody<
-    Partial<{
-      name: string;
-      slug: string;
-      description: string;
-      shortDescription: string;
-      price: number;
-      currency: string;
-      inStock: boolean;
-      featured: boolean;
-      image: string;
-      categoryIds: number[];
-      labelIds: number[];
-    }>
-  >(event);
-
-  const product = createProduct(body);
-  return { data: product };
+  const body = await readBody(event);
+  return await proxyToExternalAPI(event, "/cms/products", {
+    method: "POST",
+    body,
+  });
 });

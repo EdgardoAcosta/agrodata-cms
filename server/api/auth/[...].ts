@@ -1,7 +1,4 @@
 import { NuxtAuthHandler } from "#auth";
-import { promises as fs } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 
 // Type definitions for better type safety
 interface AuthUser {
@@ -15,18 +12,17 @@ interface AuthUser {
 const runtimeConfig = useRuntimeConfig();
 const secret = runtimeConfig.authJs?.secret;
 const isProd = process.env.NODE_ENV === "production";
-const cwd = process.cwd();
 
 if (!secret || secret.trim() === "") {
   throw new Error(
-    "NUXT_AUTH_JS_SECRET is required. Add it to your .env file. Generate with: openssl rand -base64 32",
+    "NUXT_AUTH_JS_SECRET is required. Add it to your .env file. Generate with: openssl rand -base64 32"
   );
 }
 
 // Validate secret strength
 if (secret.length < 32) {
   throw new Error(
-    "NUXT_AUTH_JS_SECRET must be at least 32 characters for security. Generate with: openssl rand -base64 32",
+    "NUXT_AUTH_JS_SECRET must be at least 32 characters for security. Generate with: openssl rand -base64 32"
   );
 }
 
@@ -36,78 +32,58 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-type MockUser = AuthUser & { password: string; login?: string };
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-let cachedUsers: MockUser[] | null = null;
-async function loadMockUsers(): Promise<MockUser[]> {
-  if (cachedUsers) return cachedUsers;
-
-  try {
-    // Try repository path (dev) and build path (dist/.output)
-    const candidates = [
-      join(cwd, "server/data/users.json"),
-      join(__dirname, "../data/users.json"),
-      join(__dirname, "../../data/users.json"),
-    ];
-
-    let contents: string | null = null;
-    for (const path of candidates) {
-      try {
-        contents = await fs.readFile(path, "utf-8");
-        break;
-      } catch (e) {
-        // keep trying next candidate
-      }
-    }
-
-    if (!contents) {
-      throw new Error("No users.json found in expected locations");
-    }
-
-    cachedUsers = JSON.parse(contents) as MockUser[];
-  } catch (err) {
-    console.error("Failed to load mock users, falling back to defaults:", err);
-    cachedUsers = [
-      {
-        id: "admin-001",
-        login: "admin",
-        email: "admin@agrodata.com",
-        password: "admin",
-        name: "Admin User",
-        role: "admin",
-        organization: "WarehouseOps",
-      },
-    ];
-  }
-
-  return cachedUsers;
-}
-
-// TODO: Replace with actual external backend API call.
 async function authenticateUser(
   identifier: string,
-  password: string,
-): Promise<AuthUser | null> {
+  password: string
+): Promise<{ user: AuthUser; accessToken: string } | null> {
   if (!identifier || !password) {
     return null;
   }
 
-  const users = await loadMockUsers();
-  const lower = identifier.toLowerCase();
-    const user = users.find((u) => {
-      const matchesEmail = u.email.toLowerCase() === lower;
-      const matchesLogin = u.login?.toLowerCase() === lower;
-      return (matchesEmail || matchesLogin) && u.password === password;
+  const config = useRuntimeConfig();
+  const apiBaseUrl = config.apiBaseUrl || "http://localhost:8883";
+
+  try {
+    // Authenticate with external API
+    const response = await $fetch<{
+      data: {
+        user: any;
+        accessToken: string;
+      };
+    }>(`${apiBaseUrl}/auth/login`, {
+      method: "POST",
+      body: {
+        username: identifier,
+        password,
+      },
     });
 
-  if (!user) {
-    return null;
+    if (response?.data?.user && response.data.accessToken) {
+      const apiUser = response.data.user;
+
+      // Map API user fields to AuthUser format
+      const user: AuthUser = {
+        id: String(apiUser.id), // Convert number to string
+        email: apiUser.email,
+        name: apiUser.username || apiUser.name || apiUser.email, // Use username as name
+        role: apiUser.role || "user",
+        organization: apiUser.organization || "Agrodata",
+      };
+
+      return {
+        user,
+        accessToken: response.data.accessToken,
+      };
+    }
+  } catch (error: any) {
+    console.error("External API authentication failed:", error);
+    throw createError({
+      statusCode: error.statusCode || 401,
+      statusMessage: error.message || "Authentication failed",
+    });
   }
 
-  const { password: _, ...sanitizedUser } = user;
-  return sanitizedUser;
+  return null;
 }
 
 export default NuxtAuthHandler({
@@ -134,8 +110,16 @@ export default NuxtAuthHandler({
         }
 
         // Allow login by email or login alias
-        const user = await authenticateUser(identifier, password);
-        return user;
+        const authResult = await authenticateUser(identifier, password);
+        if (!authResult) {
+          return null;
+        }
+
+        // Return user with access token embedded
+        return {
+          ...authResult.user,
+          accessToken: authResult.accessToken,
+        };
       },
     },
   ],
@@ -144,6 +128,7 @@ export default NuxtAuthHandler({
       // On sign in, add user to token
       if (user) {
         token.user = user as AuthUser;
+        token.accessToken = (user as any).accessToken; // Store the access token
         token.iat = Math.floor(Date.now() / 1000); // Issued at
       }
 
@@ -162,6 +147,9 @@ export default NuxtAuthHandler({
     async session({ session, token }) {
       if (token.user) {
         session.user = token.user as AuthUser;
+      }
+      if (token.accessToken) {
+        (session as any).accessToken = token.accessToken as string;
       }
       return session;
     },

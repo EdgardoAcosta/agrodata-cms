@@ -11,7 +11,7 @@
     "labels": "Labels",
     "scanner": "Scanner",
     "inventory": "Inventory",
-    "inventoryCount": "Inventory Count",
+    "cycleCount": "Cycle Count",
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
@@ -118,6 +118,7 @@
   "$vuetify": {
     "open": "Open",
     "close": "Close",
+    "noDataText": "No data available",
     "input": {
       "clear": "Clear {0}",
       "prependAction": "{0} prepended action",

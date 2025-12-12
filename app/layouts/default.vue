@@ -51,13 +51,13 @@
                   </v-btn>
                 </template>
                 <v-list class="nav-menu-list" density="comfortable">
-                  <v-list-item to="/" prepend-icon="mdi-qrcode-scan" :title="t('nav.scanner')">
+                  <v-list-item to="/warehouse" prepend-icon="mdi-package-variant" :title="t('nav.inventory')">
                     <template #append>
                       <v-icon icon="mdi-chevron-right" size="small" class="text-medium-emphasis" />
                     </template>
                   </v-list-item>
-                  <v-list-item to="/warehouse/inventory-count" prepend-icon="mdi-clipboard-list"
-                    :title="t('nav.inventory')">
+                  <v-list-item to="/warehouse/cycle-count" prepend-icon="mdi-clipboard-list"
+                    :title="t('nav.cycleCount')">
                     <template #append>
                       <v-icon icon="mdi-chevron-right" size="small" class="text-medium-emphasis" />
                     </template>
@@ -137,8 +137,10 @@
         <v-list-item to="/cms/labels" @click="closeMobileMenu" prepend-icon="mdi-label" title="Labels" />
 
         <v-list-subheader class="mt-2">WAREHOUSE</v-list-subheader>
-        <v-list-item to="/warehouse/inventory-count" @click="closeMobileMenu" prepend-icon="mdi-clipboard-list"
-          title="Inventory Count" />
+        <v-list-item to="/warehouse" @click="closeMobileMenu" prepend-icon="mdi-package-variant"
+          :title="t('nav.inventory')" />
+        <v-list-item to="/warehouse/cycle-count" @click="closeMobileMenu" prepend-icon="mdi-clipboard-list"
+          :title="t('nav.cycleCount')" />
       </v-list>
 
       <template #append>

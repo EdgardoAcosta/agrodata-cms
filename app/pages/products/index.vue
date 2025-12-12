@@ -118,7 +118,6 @@
                 icon="mdi-pencil" /></v-btn>
             <v-btn size="small" variant="text" color="error" @click="confirmDelete(item)"><v-icon
                 icon="mdi-delete" /></v-btn>
-            >
           </div>
         </template>
         <template #no-data>
@@ -185,6 +184,12 @@
                 <v-text-field v-model="form.slug" label="Slug" placeholder="auto-generado" />
               </v-col>
               <v-col cols="12" md="6">
+                <v-text-field v-model="form.barcode" label="Barcode" placeholder="e.g., 7501234567890" />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field v-model="form.sku" label="SKU" placeholder="e.g., PROD-001" />
+              </v-col>
+              <v-col cols="12" md="6">
                 <v-text-field v-model.number="form.price" type="number" label="Precio" min="0" step="0.01" />
               </v-col>
               <v-col cols="6" md="3">
@@ -248,6 +253,8 @@ type Product = {
 type ProductPayload = {
   name: string;
   slug: string;
+  barcode?: string;
+  sku?: string;
   description: string;
   shortDescription: string;
   price: number;
@@ -269,6 +276,16 @@ const formOpen = ref(false);
 const filterSheet = ref(false);
 const editingId = ref<number | null>(null);
 const isEditing = computed(() => Boolean(editingId.value));
+
+// Handle query parameters (from warehouse)
+const route = useRoute();
+onMounted(() => {
+  // Check if we should open create dialog with barcode pre-filled
+  if (route.query.create === "true" && route.query.barcode) {
+    form.barcode = String(route.query.barcode);
+    formOpen.value = true;
+  }
+});
 
 // Count active filters
 const activeFiltersCount = computed(() => {
@@ -295,6 +312,8 @@ const sortBy = ref<any[]>([]);
 const form = reactive<ProductPayload>({
   name: "",
   slug: "",
+  barcode: "",
+  sku: "",
   description: "",
   shortDescription: "",
   price: 0,
@@ -316,19 +335,19 @@ const headers = [
   { title: "Acciones", key: "actions", sortable: false },
 ];
 
-const { data: categoryData } = useFetch<{ data: Category[] }>(
+const { data: categoryData } = useFetch<{ data: { items: Category[] } }>(
   "/api/categories",
 );
-const { data: labelData } = useFetch<{ data: Label[] }>("/api/labels");
+const { data: labelData } = useFetch<{ data: { items: Label[] } }>("/api/labels");
 
 const categoryOptions = computed(() =>
-  (categoryData.value?.data || []).map((cat) => ({
+  (categoryData.value?.data?.items || []).map((cat) => ({
     label: cat.name,
     value: cat.id,
   })),
 );
 const labelOptions = computed(() =>
-  (labelData.value?.data || []).map((label) => ({
+  (labelData.value?.data?.items || []).map((label) => ({
     label: label.name,
     value: label.id,
   })),
@@ -367,7 +386,7 @@ const loadItems = async () => {
           : "asc"
         : "asc";
 
-    const response = await $fetch<{ data: Product[]; total: number }>(
+    const { data } = await useFetch<{ data: { items: Product[]; total: number; page: number; itemsPerPage: number; pageCount: number } }>(
       "/api/products",
       {
         params: {
@@ -381,8 +400,8 @@ const loadItems = async () => {
         },
       },
     );
-    products.value = response.data;
-    totalItems.value = response.total;
+    products.value = data.value?.data?.items || [];
+    totalItems.value = data.value?.data?.total || 0;
   } catch (error: any) {
     console.error(error);
   } finally {
@@ -400,6 +419,8 @@ const resetForm = () => {
   Object.assign(form, {
     name: "",
     slug: "",
+    barcode: "",
+    sku: "",
     description: "",
     shortDescription: "",
     price: 0,
@@ -423,6 +444,8 @@ const openEdit = (product: Product) => {
   Object.assign(form, {
     name: product.name,
     slug: product.slug,
+    barcode: (product as any).barcode || "",
+    sku: (product as any).sku || "",
     description: product.description,
     shortDescription: product.shortDescription,
     price: product.price,
