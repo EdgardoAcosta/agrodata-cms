@@ -356,33 +356,20 @@ const handleCreateNewProduct = () => {
 const loadInventory = async () => {
   loading.value = true;
   try {
-    // Get all products
+    // Get inventory items with nested product data
     const response = await $fetch<{
-      data: Product[];
-    }>("/api/products", {
+      data: {
+        items: InventoryWithProduct[];
+        total: number;
+        page: number;
+        itemsPerPage: number;
+        pageCount: number;
+      };
+    }>("/api/warehouse/inventory", {
       query: { itemsPerPage: -1 },
     });
 
-    // Get inventory for each product
-    const items: InventoryWithProduct[] = [];
-    for (const product of response.data) {
-      try {
-        const inventory = await warehouse.getInventory(product.id);
-        items.push({
-          ...inventory,
-          product,
-        });
-      } catch (error) {
-        // If no inventory, add with 0 quantity
-        items.push({
-          productId: product.id,
-          quantity: 0,
-          product,
-        });
-      }
-    }
-
-    inventoryItems.value = items;
+    inventoryItems.value = response.data.items;
   } catch (error: any) {
     snackbar.message = error.message || "Error loading inventory";
     snackbar.color = "error";

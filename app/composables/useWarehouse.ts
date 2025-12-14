@@ -46,12 +46,11 @@ export const useWarehouse = () => {
     error.value = null;
 
     try {
-      // Try to find product by barcode/SKU
+      // Look up product by barcode/SKU using warehouse endpoint
       const response = await $fetch<{ data: ScannedProduct }>(
-        `/api/warehouse/lookup`,
+        `/api/warehouse/inventory/barcode/${code}`,
         {
           method: "GET",
-          query: { code },
         }
       );
 
