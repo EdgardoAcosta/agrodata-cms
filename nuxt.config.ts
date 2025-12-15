@@ -31,7 +31,11 @@ export default defineNuxtConfig({
       addDefaultCallbackUrl: true,
     },
     globalAppMiddleware: {
-      isEnabled: true,
+      isEnabled: true, // Re-enabled to respect definePageMeta auth options
+    },
+    sessionRefresh: {
+      enablePeriodically: true,
+      enableOnWindowFocus: true,
     },
   },
   routeRules: {

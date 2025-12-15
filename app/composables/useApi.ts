@@ -4,6 +4,8 @@
  *
  */
 export const useApi = () => {
+  const { signOut } = useAuth();
+
   /**
    * Make an API request to the Nuxt server endpoint
    * @param endpoint - API endpoint (e.g., '/categories')
@@ -19,10 +21,14 @@ export const useApi = () => {
     } catch (error: any) {
       console.error(`API Error [${endpoint}]:`, error);
 
-      // Handle authentication errors
-      if (error.statusCode === 401) {
-        console.warn("Unauthorized - please login again");
-        // You might want to trigger a re-login here
+      // Handle authentication errors - JWT token expired
+      if (error.statusCode === 401 || error.status === 401) {
+        console.warn("Session expired - redirecting to login");
+
+        // Sign out and redirect to login
+        await signOut({ callbackUrl: "/login", redirect: true });
+
+        throw new Error("Session expired. Please login again.");
       }
 
       throw error;

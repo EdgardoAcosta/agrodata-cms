@@ -42,6 +42,16 @@ export async function proxyToExternalAPI(
     return response;
   } catch (error: any) {
     console.error(`External API error [${method} ${endpoint}]:`, error);
+
+    // If we get a 401, it means the JWT token is expired/invalid
+    // Return 401 to trigger client-side logout
+    if (error.statusCode === 401 || error.status === 401) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: "Session expired. Please login again.",
+      });
+    }
+
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage: error.message || "External API request failed",
