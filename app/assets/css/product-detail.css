@@ -1,0 +1,19 @@
+.product-card {
+  border-color: #e0e0e0;
+}
+
+.tabs-shell {
+  padding: 6px;
+  background-color: #f5f5f5;
+}
+
+.tab-body {
+  padding: 8px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #ececec;
+}
+
+.v-card-text .v-sheet {
+  background-color: #fafafa;
+}

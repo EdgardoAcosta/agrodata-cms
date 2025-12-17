@@ -34,7 +34,7 @@ export default defineNuxtConfig({
       isEnabled: true, // Re-enabled to respect definePageMeta auth options
     },
     sessionRefresh: {
-      enablePeriodically: true,
+      enablePeriodically: false,
       enableOnWindowFocus: true,
     },
   },

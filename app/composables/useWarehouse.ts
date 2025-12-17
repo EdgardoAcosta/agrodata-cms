@@ -1,31 +1,11 @@
 import type { Ref } from "vue";
+import type {
+  ScannedProduct,
+  ScanResult,
+  InventoryItem,
+} from "~~/types/warehouse";
 
-export interface InventoryItem {
-  productId: number;
-  quantity: number;
-  location?: string;
-  lastCounted?: string;
-}
-
-export interface ScannedProduct {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  currency: string;
-  inStock: boolean;
-  image: string;
-  barcode?: string;
-  sku?: string;
-  inventory?: InventoryItem;
-}
-
-export interface ScanResult {
-  barcode: string;
-  format: string;
-  timestamp: string;
-  product?: ScannedProduct;
-}
+export type { ScannedProduct, ScanResult, InventoryItem };
 
 /**
  * Composable for warehouse inventory management and product scanning

@@ -155,6 +155,15 @@
     <v-main>
       <slot />
     </v-main>
+
+    <!-- Global Floating Action Button -->
+    <v-fab v-if="showGlobalFab" icon="mdi-barcode-scan" color="primary" size="large" location="bottom end" app appear
+      @click="globalScannerOpen = true" />
+
+    <!-- Global Scanner Modal -->
+    <BarcodeScannerModal v-model="globalScannerOpen" @product-found="handleGlobalProductFound"
+      @create-product="handleGlobalCreateProduct" @link-product="handleGlobalLinkProduct" />
+
     <MobileDock :items="dockItems" />
   </v-app>
 </template>
@@ -165,6 +174,15 @@ const { data: session, signOut } = useAuth();
 const route = useRoute();
 const router = useRouter();
 const mobileMenuOpen = ref(false);
+const globalScannerOpen = ref(false);
+
+// Show FAB on pages that don't have their own scanner
+const showGlobalFab = computed(() => {
+  const path = route.path;
+  // Don't show on warehouse page (has its own scanner button)
+  return !path.startsWith('/warehouse');
+});
+
 const go = (path: string) => router.push(path);
 const dockItems = computed(() => [
   {
@@ -217,6 +235,28 @@ const closeMobileMenu = () => {
 const handleSignOutAndClose = async () => {
   closeMobileMenu();
   await handleSignOut();
+};
+
+// Global scanner handlers
+const handleGlobalProductFound = async (product: any) => {
+  console.log('Product found:', product);
+  // Navigate to product detail page
+  await router.push(`/products/${product.id}`);
+  globalScannerOpen.value = false;
+};
+
+const handleGlobalCreateProduct = (barcode: string) => {
+  globalScannerOpen.value = false;
+  router.push({
+    path: "/products/new",
+    query: { barcode },
+  });
+};
+
+const handleGlobalLinkProduct = async (data: { barcode: string; productId: number }) => {
+  console.log('Linking barcode to product:', data);
+  // TODO: Implement API call to link barcode
+  globalScannerOpen.value = false;
 };
 
 watch(

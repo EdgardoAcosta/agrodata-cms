@@ -27,6 +27,7 @@ export type ProductFeature = {
   productId: number;
   featureText: string;
   displayOrder: number;
+  feature_text?: string; // backward compat
 };
 
 export type ProductSpecification = {
@@ -35,6 +36,8 @@ export type ProductSpecification = {
   specName: string;
   specValue: string;
   createdAt: string;
+  spec_name?: string; // backward compat
+  spec_value?: string; // backward compat
 };
 
 export type ProductTechnicalSpec = {
@@ -43,6 +46,8 @@ export type ProductTechnicalSpec = {
   specName: string;
   specValue: string;
   createdAt: string;
+  spec_name?: string; // backward compat
+  spec_value?: string; // backward compat
 };
 
 export type ProductSeoKeyword = {
@@ -63,6 +68,7 @@ export type ProductRecord = {
   inStock: boolean;
   featured: boolean;
   image: string;
+  restockPoint?: number;
   barcode?: string;
   sku?: string;
 };
@@ -75,7 +81,7 @@ export type Product = ProductRecord & {
   specifications: ProductSpecification[];
   technicalSpecs: ProductTechnicalSpec[];
   relatedProductIds: number[];
-  seoKeywords: string[];
+  seoKeywords: Array<string | { id: number; keyword: string }>;
 };
 
 export type Inventory = {
